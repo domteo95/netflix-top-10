@@ -1,13 +1,4 @@
-from flask import Flask, render_template, request, jsonify
-from functools import wraps
-import mysql.connector
-import bcrypt
-import configparser
-import io
-import random
-from datetime import datetime
-from datetime import timedelta
-import string
+from flask import Flask, request
 import requests
 import bs4
 from bs4 import BeautifulSoup
