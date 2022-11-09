@@ -63,7 +63,9 @@ def get_details():
 
     trailer_url = "https://youtube.com/results?search_query="
     trailer = film + " tv show trailer"
+    print('film/tvshow name', trailer)
     trailer_url = trailer_url + trailer
+    print('youtube search url', trailer_url)
     source_code = requests.get(trailer_url)
     plain_text = source_code.text
     soup = BeautifulSoup(plain_text, "html.parser")
@@ -73,8 +75,9 @@ def get_details():
     index = 11
     # print(film, index)
     vid_url = text[index:].split("=")[1]
-    vid_url = vid_url.split('"')[0]
     print('1st vid url', vid_url)
+    vid_url = vid_url.split('"')[0]
+    print('2nd vid url', vid_url)
     vid_url = "https://www.youtube.com/embed/" + vid_url
     # print("TRAILER URLLLLLL", vid_url)
 
