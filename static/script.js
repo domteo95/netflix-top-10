@@ -106,7 +106,7 @@ function getDetails(){
         fetch("/api/film_details?title="+tv_result)
         .then(response => response.json())
         .then(function(data){
-          console.log(tv_result, data);
+          //console.log(tv_result, data);
           shows[tv_result]['trailer_url'] = data['trailer_url']   
           if (!("error" in data)){
             shows[tv_result]['plot'] = data['plot']
