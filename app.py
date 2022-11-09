@@ -1,59 +1,12 @@
-from flask import Flask, render_template, request, jsonify
-from functools import wraps
-import mysql.connector
-import bcrypt
-import configparser
-import io
-import random
-from datetime import datetime
-from datetime import timedelta
-import string
+from flask import Flask, request
 import requests
-import bs4
 from bs4 import BeautifulSoup
 
 app = Flask(__name__)
-app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
-config = configparser.ConfigParser()
-config.read("secrets.cfg")
-DB_NAME = "passwords"
-DB_USERNAME = config["secrets"]["DB_USERNAME"]
-DB_PASSWORD = config["secrets"]["DB_PASSWORD"]
-PEPPER = config["secrets"]["PEPPER"]
 
-# sample_chats = {
-#     1: {
-#         "authorized_users": {
-#             "session_token_0": {"username": "Alice", "expires": "2020-02-15T20:53:15Z"},
-#             "session_token_1": {"username": "Bob", "expires": "2020-02-15T20:57:22Z"}
-#         },
-#         "magic_key": "some_really_long_key_value"
-#         "messages": [
-#             {"username": "Alice", "body": "Hi Bob!"},
-#             {"username": "Bob", "body": "Hi Alice!"},
-#             {"username": "Alice", "body": "Knock knock"},
-#             {"username": "Bob", "body": "Who's there?"},
-#         ]
-#     }
-# }
-
-chats = {}
-
-
-@app.route("/")
-@app.route("/auth")
-@app.route("/list")
-def index():
-    return app.send_static_file("index.html")
-
-
-@app.route("/<country>")
-def getCountry(country):
-    return app.send_static_file("index.html")
-
-
-# -------------------------------- API ROUTES ----------------------------------
-
+@app.route('/')
+def hello_world():
+    return 'Netflix Top 10 and details web-scrapper!'
 
 @app.route("/api/scrape", methods=["POST"])
 def signup():
@@ -159,3 +112,4 @@ def get_details():
 
     except requests.exceptions.HTTPError as err:
         raise SystemExit(err)
+
