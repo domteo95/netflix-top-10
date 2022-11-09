@@ -1,0 +1,85 @@
+body {
+  margin-left: 3%;
+  margin-right: 3%;
+  text-align: center;
+}
+
+#plot {
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+#main_title {
+  font-family: "Bebas Neue", cursive;
+  color: red;
+  font-size: 80px;
+  height: 45px;
+}
+
+button {
+  height: 25px;
+  border-radius: 6px;
+  background-color: beige;
+  margin: 5px;
+}
+
+.splash {
+  display: block;
+  width: 100%;
+  background: black;
+  padding-bottom: 10px;
+}
+
+#yellow-star {
+  color: palegoldenrod;
+  outline: black;
+  outline-width: 1cm;
+}
+
+#yellow-star {
+  outline: white;
+  outline-width: 1cm;
+}
+
+#title {
+  font-size: larger;
+  font-weight: bolder;
+}
+
+#result-div {
+  height: 15%;
+  margin-top: 7%;
+}
+
+#trailer {
+  width: 70%;
+  height: 70%;
+}
+
+.chat {
+  display: none;
+}
+
+#messageContainer {
+  min-height: 30%;
+  max-height: 50%;
+  overflow: scroll;
+  padding-bottom: 120px;
+}
+
+.listContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
+}
+
+#list_title,
+#list_title_tv {
+  font-family: "Bebas Neue", cursive;
+  color: red;
+  font-size: 45px;
+}
+
+#intro {
+  color: beige;
+}

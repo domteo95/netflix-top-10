@@ -1,16 +1,23 @@
-
-# A very simple Flask Hello World app for you to get started with...
-
-
-from flask import Flask, request
+from flask import Flask, render_template, request, jsonify
+from functools import wraps
+import mysql.connector
+import bcrypt
+import configparser
+import io
+import random
+from datetime import datetime
+from datetime import timedelta
+import string
 import requests
+import bs4
 from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 
-@app.route('/')
-def hello_world():
-    return 'Netflix Top 10 and details web-scrapper!'
+@app.route("/")
+
+# -------------------------------- API ROUTES ----------------------------------
+
 
 @app.route("/api/scrape", methods=["POST"])
 def signup():
@@ -116,4 +123,3 @@ def get_details():
 
     except requests.exceptions.HTTPError as err:
         raise SystemExit(err)
-
