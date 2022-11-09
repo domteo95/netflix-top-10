@@ -70,14 +70,15 @@ def get_details():
     plain_text = source_code.text
     soup = BeautifulSoup(plain_text, "html.parser")
     scripts = soup.find_all("body")[0].find_all("script")
-    text = scripts[13].text.split("webCommandMetadata")[2]
+    #vid_url = scripts[13].text.split("webCommandMetadata")[2]
     # index = text.find("watch")
-    index = 11
+    vid_url = scripts[13].text.split("/watch?v=")[1].split('"')[0]
+    print(vid_url)
     # print(film, index)
-    vid_url = text[index:].split("=")[1]
-    print('1st vid url', vid_url)
-    vid_url = vid_url.split('"')[0]
-    print('2nd vid url', vid_url)
+    #vid_url = text[index:].split("=")[1]
+    #print('1st vid url', vid_url)
+    #vid_url = vid_url.split('"')[0]
+    #print('2nd vid url', vid_url)
     vid_url = "https://www.youtube.com/embed/" + vid_url
     # print("TRAILER URLLLLLL", vid_url)
 
