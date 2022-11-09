@@ -74,6 +74,7 @@ def get_details():
     # print(film, index)
     vid_url = text[index:].split("=")[1]
     vid_url = vid_url.split('"')[0]
+    print('1st vid url', vid_url)
     vid_url = "https://www.youtube.com/embed/" + vid_url
     # print("TRAILER URLLLLLL", vid_url)
 
@@ -87,7 +88,7 @@ def get_details():
             metacritic = response["Metascore"]
             imdb = response["imdbRating"]
             plot = response["Plot"]
-            print(metacritic, imdb, plot)
+            print(vid_url)
             return {
                 "metacritic": metacritic,
                 "imdb": imdb,
@@ -95,7 +96,7 @@ def get_details():
                 "trailer_url": vid_url,
             }
         else:
-            print("HERE")
+            #print("HERE")
             film = film.split(":")[0]
             response = requests.get(search_url + film)
             response = response.json()
@@ -106,7 +107,8 @@ def get_details():
                 metacritic = new["Metascore"]
                 imdb = new["imdbRating"]
                 plot = new["Plot"]
-                print(metacritic, imdb, plot)
+                #print(metacritic, imdb, plot)
+                print(vid_url)
                 return {
                     "metacritic": metacritic,
                     "imdb": imdb,

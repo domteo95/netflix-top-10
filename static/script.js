@@ -106,7 +106,7 @@ function getDetails(){
         fetch("/api/film_details?title="+tv_result)
         .then(response => response.json())
         .then(function(data){
-          //console.log(tv_result, data);
+          console.log(tv_result, data);
           shows[tv_result]['trailer_url'] = data['trailer_url']   
           if (!("error" in data)){
             shows[tv_result]['plot'] = data['plot']
@@ -115,6 +115,7 @@ function getDetails(){
          
         })));
         for (const [key, value] of Object.entries(shows)) {
+          //console.log(value)
           var tv_output = document.createElement("div");
           tv_output.setAttribute('id', 'result-div');
           var tv_a = document.createElement("P");
@@ -151,48 +152,3 @@ function getDetails(){
 
   })
 }
-
-
-
-// if the navigation bar is just "/"
-//   hide the chat block
-//   show the splash screen block
-//   return
-//
-// else if the navigtion bar contains a magic link
-//   hide the splash screen block
-//   show the chat block
-//
-//   if we already have a session_token for this chat in local storage:
-//     take the magic_key out of the url
-//     start polling for messages
-//     return
-//
-//   else (we don't have a session_token for this chat in local storage):
-//     use the authenticate endpoint to try to exchange the magic key for a session_token
-//
-//     if you get a token back
-//       put it in local storage
-//       take the magic_key out of the url
-//       start polling for messages
-//       return
-//
-//     else (you didn't get a valid token back)
-//       hide the chat screen
-//       change url to "/"
-//       show the splash screen
-//       return
-//
-// else if the navigtion bar contains "/chat/<chat_id>"
-//   hide the splash screen block
-//   show the chat block
-//
-//   if we have session_token for this chat in local storage:
-//     start polling for messages
-//     return
-//
-//   else (no session token)
-//     hide the chat screen
-//     change url to "/"
-//     show the splash screen
-//     return
