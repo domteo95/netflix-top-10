@@ -60,7 +60,7 @@ def get_details():
     # film = film.replace(" ", "+")
 
     search_url = "http://www.omdbapi.com/?apikey=d470d3d4&s="
-
+    print(film)
     trailer_url = "https://youtube.com/results?search_query="
     trailer = film + " tv show trailer"
     print('film/tvshow name', trailer)
