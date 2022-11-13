@@ -46,7 +46,26 @@ button {
   font-weight: bolder;
 }
 
-#result-div {
+#result-film-1-div,
+#result-film-2-div,
+#result-film-3-div,
+#result-film-4-div,
+#result-film-5-div,
+#result-film-6-div,
+#result-film-7-div,
+#result-film-8-div,
+#result-film-9-div,
+#result-film-10-div,
+#result-tv-1-div,
+#result-tv-2-div,
+#result-tv-3-div,
+#result-tv-4-div,
+#result-tv-5-div,
+#result-tv-6-div,
+#result-tv-7-div,
+#result-tv-8-div,
+#result-tv-9-div,
+#result-tv-10-div {
   height: 15%;
   margin-top: 7%;
 }

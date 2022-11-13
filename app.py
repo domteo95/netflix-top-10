@@ -1,16 +1,55 @@
-from flask import Flask, request
+from flask import Flask, render_template, request, jsonify
+from functools import wraps
+import mysql.connector
+import bcrypt
+import configparser
+import io
+import random
+from datetime import datetime
+from datetime import timedelta
+import string
 import requests
 import bs4
 from bs4 import BeautifulSoup
 
 app = Flask(__name__)
+app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
+config = configparser.ConfigParser()
+config.read("secrets.cfg")
+DB_NAME = "passwords"
+DB_USERNAME = config["secrets"]["DB_USERNAME"]
+DB_PASSWORD = config["secrets"]["DB_PASSWORD"]
+PEPPER = config["secrets"]["PEPPER"]
 
+# sample_chats = {
+#     1: {
+#         "authorized_users": {
+#             "session_token_0": {"username": "Alice", "expires": "2020-02-15T20:53:15Z"},
+#             "session_token_1": {"username": "Bob", "expires": "2020-02-15T20:57:22Z"}
+#         },
+#         "magic_key": "some_really_long_key_value"
+#         "messages": [
+#             {"username": "Alice", "body": "Hi Bob!"},
+#             {"username": "Bob", "body": "Hi Alice!"},
+#             {"username": "Alice", "body": "Knock knock"},
+#             {"username": "Bob", "body": "Who's there?"},
+#         ]
+#     }
+# }
+
+chats = {}
 
 
 @app.route("/")
+@app.route("/auth")
+@app.route("/list")
 def index():
     return app.send_static_file("index.html")
 
+
+@app.route("/<country>")
+def getCountry(country):
+    return app.send_static_file("index.html")
 
 
 # -------------------------------- API ROUTES ----------------------------------
@@ -60,25 +99,20 @@ def get_details():
     # film = film.replace(" ", "+")
 
     search_url = "http://www.omdbapi.com/?apikey=d470d3d4&s="
-    print(film)
+
     trailer_url = "https://youtube.com/results?search_query="
     trailer = film + " tv show trailer"
-    print('film/tvshow name', trailer)
     trailer_url = trailer_url + trailer
-    print('youtube search url', trailer_url)
     source_code = requests.get(trailer_url)
     plain_text = source_code.text
     soup = BeautifulSoup(plain_text, "html.parser")
     scripts = soup.find_all("body")[0].find_all("script")
-    #vid_url = scripts[13].text.split("webCommandMetadata")[2]
+    text = scripts[13].text.split("webCommandMetadata")[2]
     # index = text.find("watch")
-    vid_url = scripts[13].text.split("/watch?v=")[1].split('"')[0]
-    print(vid_url)
+    index = 11
     # print(film, index)
-    #vid_url = text[index:].split("=")[1]
-    #print('1st vid url', vid_url)
-    #vid_url = vid_url.split('"')[0]
-    #print('2nd vid url', vid_url)
+    vid_url = text[index:].split("=")[1]
+    vid_url = vid_url.split('"')[0]
     vid_url = "https://www.youtube.com/embed/" + vid_url
     # print("TRAILER URLLLLLL", vid_url)
 
@@ -92,7 +126,7 @@ def get_details():
             metacritic = response["Metascore"]
             imdb = response["imdbRating"]
             plot = response["Plot"]
-            print(vid_url)
+            print(metacritic, imdb, plot)
             return {
                 "metacritic": metacritic,
                 "imdb": imdb,
@@ -100,7 +134,7 @@ def get_details():
                 "trailer_url": vid_url,
             }
         else:
-            #print("HERE")
+            print("HERE")
             film = film.split(":")[0]
             response = requests.get(search_url + film)
             response = response.json()
@@ -111,8 +145,7 @@ def get_details():
                 metacritic = new["Metascore"]
                 imdb = new["imdbRating"]
                 plot = new["Plot"]
-                #print(metacritic, imdb, plot)
-                print(vid_url)
+                print(metacritic, imdb, plot)
                 return {
                     "metacritic": metacritic,
                     "imdb": imdb,
