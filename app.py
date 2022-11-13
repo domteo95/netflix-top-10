@@ -18,9 +18,9 @@ def index():
 
 @app.route("/api/scrape", methods=["POST"])
 def signup():
-    print(request.data)
+    #print(request.data)
     body = request.get_json()
-    print(body)
+    #print(body)
 
     country = body["country"]
     base_url = "https://top10.netflix.com/"
@@ -50,39 +50,33 @@ def signup():
         print(e)
 
 
+def get_trailer_url(year, film):
+    trailer_url = "https://youtube.com/results?search_query="
+    trailer = film +  year + " Netflix trailer"
+    #print('film/tvshow name', trailer)
+    trailer_url = trailer_url + trailer
+    #print('youtube search url', trailer_url)
+    source_code = requests.get(trailer_url)
+    plain_text = source_code.text
+    soup = BeautifulSoup(plain_text, "html.parser")
+    scripts = soup.find_all("body")[0].find_all("script")
+    vid_url = scripts[13].text.split("/watch?v=")[1].split('"')[0]
+    #print(vid_url)
+    vid_url = "https://www.youtube.com/embed/" + vid_url
+    return vid_url
+
+
+
+
 @app.route("/api/film_details", methods=["GET"])
 def get_details():
 
     base_url = "http://www.omdbapi.com/?apikey=d470d3d4&t="
     film = request.args.get("title")
-    # if ":" in film:
-    #    film = film.split(":")[0]
-    # film = film.replace(" ", "+")
 
     search_url = "http://www.omdbapi.com/?apikey=d470d3d4&s="
-    print(film)
-    trailer_url = "https://youtube.com/results?search_query="
-    trailer = film + " tv show trailer"
-    print('film/tvshow name', trailer)
-    trailer_url = trailer_url + trailer
-    print('youtube search url', trailer_url)
-    source_code = requests.get(trailer_url)
-    plain_text = source_code.text
-    soup = BeautifulSoup(plain_text, "html.parser")
-    scripts = soup.find_all("body")[0].find_all("script")
-    #vid_url = scripts[13].text.split("webCommandMetadata")[2]
-    # index = text.find("watch")
-    vid_url = scripts[13].text.split("/watch?v=")[1].split('"')[0]
-    print(vid_url)
-    # print(film, index)
-    #vid_url = text[index:].split("=")[1]
-    #print('1st vid url', vid_url)
-    #vid_url = vid_url.split('"')[0]
-    #print('2nd vid url', vid_url)
-    vid_url = "https://www.youtube.com/embed/" + vid_url
-    # print("TRAILER URLLLLLL", vid_url)
-
-    film = film.split(": Season")[0]
+    
+    #film = film.split(": Season")[0]
     search = base_url + film
     try:
         response = requests.get(search)
@@ -92,7 +86,9 @@ def get_details():
             metacritic = response["Metascore"]
             imdb = response["imdbRating"]
             plot = response["Plot"]
-            print(vid_url)
+            year = response['Year']
+            print(1, film)
+            vid_url = get_trailer_url(year, film)
             return {
                 "metacritic": metacritic,
                 "imdb": imdb,
@@ -101,8 +97,8 @@ def get_details():
             }
         else:
             #print("HERE")
-            film = film.split(":")[0]
-            response = requests.get(search_url + film)
+            film_cleaned = film.split(":")[0]
+            response = requests.get(search_url + film_cleaned)
             response = response.json()
             if "Error" not in response:
                 title = response["Search"][0]["Title"]
@@ -111,8 +107,9 @@ def get_details():
                 metacritic = new["Metascore"]
                 imdb = new["imdbRating"]
                 plot = new["Plot"]
-                #print(metacritic, imdb, plot)
-                print(vid_url)
+                year = new['Year']
+                print(2, film)
+                vid_url = get_trailer_url(year, film)
                 return {
                     "metacritic": metacritic,
                     "imdb": imdb,
@@ -121,7 +118,8 @@ def get_details():
                 }
 
             else:
-                print("MOVIE NOT FOUND")
+                print(film, "MOVIE NOT FOUND")
+                vid_url = get_trailer_url("", film)
                 return {"error": "Movie not found", "trailer_url": vid_url}
 
     except requests.exceptions.HTTPError as err:

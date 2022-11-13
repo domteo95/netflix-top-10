@@ -1,12 +1,3 @@
-// page loads
-
-
-
-//window.localStorage.setItem("username", "");
-//window.localStorage.setItem("session_token", "");
-//window.localStorage.setItem('from_chat', "");
-// update();
-
 function getDetails(){
   const country = document.getElementById("country").value;
   fetch("/api/scrape", {
@@ -15,30 +6,24 @@ function getDetails(){
     body: JSON.stringify({country: country})
   }).then(response => response.json())
   .then(function(data){
-    console.log(data['results'], data['tv_results'])
     const results = data['results']
     const tv_results = data['tv_results']
     const country_name = country.charAt(0).toUpperCase() + country.slice(1);
-    // think about using a for loop to populate the results instead
     document.getElementById('list_title').innerHTML = 'Top 10 Films for ' + country_name
     document.getElementById('list_title_tv').innerHTML = 'Top 10 TV Shows for ' + country_name
     const list_number = ['1','2','3','4','5','6','7','8','9','10']
     list_number.forEach(function(i){
-      //console.log('TESTING', i)
       var films = document.getElementById(`result-film-${i}-div`)
       var tv = document.getElementById(`result-tv-${i}-div`)
-      while (films.lastChild) {
-        console.log('REMOVING FILM')
-        films.removeChild(films.lastChild);}
-      while (tv.lastChild) {
-        tv.removeChild(tv.lastChild)}
+      console.log('removing')
+      films.innerHTML = ''
+      tv.innerHTML = ''
     });
     
 
     var number = 0 
     var movies = {}
-    async function getFilmDetails(){
-      await results.forEach(function(element){
+    results.forEach(function(element){
       
       number+=1
       movies[element]={
@@ -46,10 +31,10 @@ function getDetails(){
       fetch("/api/film_details?title="+element)
         .then(response => response.json())
         .then(function(data){
-          //console.log('individual film',data)
-          //console.log(result, data['imdb'], data['plot'], data['trailer_url']);
           if (!("error" in data)){
+            
             var film_rank =  movies[element]['rank'].toString()
+            console.log('film ok', element, film_rank)
             output = document.getElementById(`result-film-${film_rank}-div`)
             var a = document.createElement("P");
             a.innerHTML = data['plot'];
@@ -78,22 +63,33 @@ function getDetails(){
             trailer.src = data['trailer_url'];
             trailer.setAttribute('id', 'trailer')
             output.appendChild(trailer);
-            
-            //films.append(output);
-                  //movies[element]['rank']=number
-                  //console.log('MOVIES', movies) 
+
                 }
+          else{
+            console.log('film not ok', element)
+            var film_rank =  movies[element]['rank'].toString()
+            output = document.getElementById(`result-film-${film_rank}-div`)
+            var p = document.createElement("P");
+            p.setAttribute('id', 'title')
+            p.innerHTML = film_rank + ". " + element;
+            output.appendChild(p);
+            var a = document.createElement("P");
+            a.innerHTML = 'Movie not found in database';
+            a.setAttribute('id', 'plot')
+            output.appendChild(a)
+            var trailer = document.createElement("iframe");
+            trailer.src = data['trailer_url'];
+            trailer.setAttribute('id', 'trailer')
+            output.appendChild(trailer);
+          }
         })
       //return movies
       })
       //return movies     
-      }
-    getFilmDetails();
 
     var tv_number = 0 
     shows = {}
-    async function getTVDetails(){
-      tv_results.forEach(function(element){
+    tv_results.forEach(function(element){
       tv_number+=1
       shows[element]={
         "rank":tv_number}
@@ -103,6 +99,7 @@ function getDetails(){
         .then(function(data){
           if (!("error" in data)){
             var tv_rank =  shows[element]['rank'].toString()
+            //console.log(element, tv_rank, "TV RANK!!!!")
             output = document.getElementById(`result-tv-${tv_rank}-div`)
             var a = document.createElement("P");
             a.innerHTML = data['plot'];
@@ -131,10 +128,7 @@ function getDetails(){
             trailer.src = data['trailer_url'];
             trailer.setAttribute('id', 'trailer')
             output.appendChild(trailer);
-            
-            //films.append(output);
-                  //movies[element]['rank']=number
-                  //console.log('MOVIES', movies) 
+
                 }
           else{
             var tv_rank =  shows[element]['rank'].toString()
@@ -154,55 +148,9 @@ function getDetails(){
           }
         })
     } )
-  
-  }
-  getTVDetails();
-
 
   })
 }
 
 
 
-// if the navigation bar is just "/"
-//   hide the chat block
-//   show the splash screen block
-//   return
-//
-// else if the navigtion bar contains a magic link
-//   hide the splash screen block
-//   show the chat block
-//
-//   if we already have a session_token for this chat in local storage:
-//     take the magic_key out of the url
-//     start polling for messages
-//     return
-//
-//   else (we don't have a session_token for this chat in local storage):
-//     use the authenticate endpoint to try to exchange the magic key for a session_token
-//
-//     if you get a token back
-//       put it in local storage
-//       take the magic_key out of the url
-//       start polling for messages
-//       return
-//
-//     else (you didn't get a valid token back)
-//       hide the chat screen
-//       change url to "/"
-//       show the splash screen
-//       return
-//
-// else if the navigtion bar contains "/chat/<chat_id>"
-//   hide the splash screen block
-//   show the chat block
-//
-//   if we have session_token for this chat in local storage:
-//     start polling for messages
-//     return
-//
-//   else (no session token)
-//     hide the chat screen
-//     change url to "/"
-//     show the splash screen
-//     return
